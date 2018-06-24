@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/lib/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <title>任务清单</title>
+</head>
+
+<body>
+    <div id="main">
+        <div class="navbar">
+            <div class="wrap">
+                <h1>任务清单</h1>
+            </div>
+        </div>
+        <div class="header">
+            <div class="wrap">所有的任务都在下面哦，别忘了去做</div>
+        </div>
+        <form class="task" id="task" @submit.prevent='merge'>
+            <div class="wrap">
+                <input type="text" id="taskIput" class="inputs" v-model='current.title' autocomplete="off" @blur="inputBlur()" @focus="inputFocus()">
+                <button type="submit" class="submit">添加</button>
+                <div v-show="current.id||focusState" class="detail" style="font-size: 1rem">
+                    <textarea v-model="current.desc" class="content" @blur="inputBlur()" @focus="inputFocus()"></textarea>
+                    <input type="datetime-local" v-model="current.date" class="recom-time" @blur="inputBlur()" @focus="inputFocus()">
+                </div>
+            </div>
+        </form>
+        <div class="task-list">
+            <div class="wrap">
+                <p class="task-not">
+                    未完成
+                </p>
+                <task :todo='todo' v-for="todo in list" v-if='!todo.completed' v-bind:key="todo.id">
+                </task>
+                <div v-if="!taskNotDoneChecked()" class="task-default">暂无内容</div>
+            </div>
+        </div>
+        <div class="task-list">
+            <div class="wrap">
+                <p class="task-done">
+                    已完成
+                </p>
+                <div class="item done" v-for="todo in list" v-if='todo.completed' v-bind:key="todo.id">
+                    <i @click='completed(todo.id)' class="fa fa-check-square-o checked"></i>
+                    <span class="title">{{todo.title}}</span>
+                    <button @click='remove(todo.id)'>删除</button>
+                    <button @click="detailToggle(todo.id)">详情</button>
+                    <div v-if="todo.showDetail" class="desc">
+                        {{todo.desc|| "暂无内容"}}
+                    </div>
+                </div>
+                <div v-if="!taskDoneChecked()" class="task-default">暂无内容</div>
+            </div>
+        </div>
+    </div>
+    <template id="task-tpl">
+        <div class="item not-done">
+            <i @click="action('completed',todo.id)" class="fa fa-square-o not-checked"></i>
+            <span class="title">{{todo.title}}</span>
+            <button @click="action('remove',todo.id)">删除</button>
+            <button @click="action('setTodo',todo)">更新</button>
+            <button @click="action('detailToggle',todo.id)">详情</button>
+            <div v-if="todo.showDetail" class="desc">
+                {{todo.desc|| "暂无内容"}}
+            </div>
+        </div>
+    </template>
+</body>
+<script src="js/lib/vue.js"></script>
+<script src="js/component/storage.js"></script>
+<script src="js/main.js"></script>
+
+</html>
